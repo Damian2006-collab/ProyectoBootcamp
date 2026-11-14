@@ -28,6 +28,17 @@ interface FormValues {
 
 const EMPTY_FORM: FormValues = { burgerId: '', name: '', qty: '1' };
 
+const CONFIRMED_KEY = 'damisburguer_pedidos';
+
+function readConfirmed(): Order[] {
+  try {
+    const parsed: unknown = JSON.parse(sessionStorage.getItem(CONFIRMED_KEY) ?? '[]');
+    return Array.isArray(parsed) ? (parsed as Order[]) : [];
+  } catch {
+    return [];
+  }
+}
+
 function validate(values: FormValues): Errors {
   return {
     hamburguesa: burgerError(values.burgerId),
@@ -49,7 +60,13 @@ export default function MenuPage() {
   const [values, setValues] = useState<FormValues>(EMPTY_FORM);
   const [errors, setErrors] = useState<Errors>({});
   const [step, setStep] = useState<Step>('form');
-  const [confirmed, setConfirmed] = useState<Order[]>([]);
+  // Pedidos confirmados: se guardan en sessionStorage, así siguen ahí al
+  // recargar o al cambiar de página mientras la pestaña siga abierta.
+  const [confirmed, setConfirmed] = useState<Order[]>(readConfirmed);
+
+  useEffect(() => {
+    sessionStorage.setItem(CONFIRMED_KEY, JSON.stringify(confirmed));
+  }, [confirmed]);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const reviewBtnRef = useRef<HTMLButtonElement>(null);
@@ -208,9 +225,13 @@ export default function MenuPage() {
             </div>
           </form>
 
-          {confirmed.length > 0 && (
-            <div className="cart-summary order-history animate-on-scroll">
-              <h2>Pedidos recibidos en esta visita</h2>
+          {/* Sin animate-on-scroll: esa animación solo se activa al cargar la
+              página, y esta lista cambia después, así que quedaría invisible. */}
+          <div className="cart-summary order-history" id="pedidos-recibidos">
+            <h2>Pedidos recibidos</h2>
+            {confirmed.length === 0 ? (
+              <p className="cart-summary__empty">Todavía no confirmaste ningún pedido.</p>
+            ) : (
               <ul className="cart-summary__list" role="list">
                 {confirmed.map((o, i) => (
                   <li className="cart-summary__item" key={i}>
@@ -219,8 +240,8 @@ export default function MenuPage() {
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </section>
 
