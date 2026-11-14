@@ -1,4 +1,4 @@
-import type { ReactNode, Ref } from 'react';
+import type { InputHTMLAttributes, ReactNode, Ref } from 'react';
 
 interface FormFieldProps {
   id: string;
@@ -14,6 +14,8 @@ interface FormFieldProps {
   fieldRef?: Ref<HTMLInputElement & HTMLTextAreaElement>;
   /** Contenido extra entre la ayuda y el error (ej. el medidor de contraseña). */
   children?: ReactNode;
+  /** Atributos extra para el <input> (ej. min, max, step). */
+  inputProps?: InputHTMLAttributes<HTMLInputElement>;
 }
 
 // Un campo de formulario accesible: label, input, ayuda opcional y un
@@ -30,6 +32,7 @@ export default function FormField({
   multiline = false,
   fieldRef,
   children,
+  inputProps,
 }: FormFieldProps) {
   const hintId = `hint-${id}`;
   const errorId = `error-${id}`;
@@ -50,7 +53,7 @@ export default function FormField({
       {multiline ? (
         <textarea {...common} onChange={(e) => onChange(e.target.value)} />
       ) : (
-        <input {...common} type={type} autoComplete={autoComplete} onChange={(e) => onChange(e.target.value)} />
+        <input {...inputProps} {...common} type={type} autoComplete={autoComplete} onChange={(e) => onChange(e.target.value)} />
       )}
       {hint && <p className="form-hint" id={hintId}>{hint}</p>}
       {children}

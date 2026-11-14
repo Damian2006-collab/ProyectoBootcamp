@@ -45,7 +45,7 @@ export default function HomePage() {
             <p>Ingredientes frescos, pan recién horneado y recetas hechas con pasión. Bienvenido a Dami's Burguer.</p>
             <div className="hero-actions">
               <Link className="btn" to="/#menu">Ver menú</Link>
-              <Link className="btn btn--outline" to="/#contacto">Hacer pedido</Link>
+              <Link className="btn btn--outline" to="/pedido">Hacer pedido</Link>
             </div>
           </div>
 

@@ -23,9 +23,9 @@ Plan de producto para completar el flujo de Dami's Burguer, aprobado el 2026-08-
 3. **Flujo de pedido simulado** — parcialmente hecho:
    - ✅ Cada item del menú en `menu.html` suma un control de cantidad + "Agregar al pedido".
    - ✅ El carrito se guarda en `localStorage` (`damisburguer_carrito`), gestionado por `ts/carrito.ts`, con un resumen visible en `#tu-pedido` (agregar, quitar, vaciar, total).
-   - ⬜ Página `pedido.html` todavía no existe: elegir retiro/entrega, datos de contacto, botón "Confirmar pedido".
-   - ⬜ Estado de confirmación con número de pedido simulado — pendiente (depende de `pedido.html`).
-   - ⬜ El botón "Hacer pedido" que queda (hero de `index.html`) sigue apuntando a `#contacto` — falta redirigirlo a `pedido.html` cuando exista. Los de nav/header se eliminaron (ver Contexto del producto).
+   - ✅ Pantalla `/pedido` (2026-11-14, según la consigna del curso): catálogo de 3 hamburguesas de precio fijo (Clásica $5, Queso $6, Doble $7), un solo tipo por pedido, nombre (mín. 2 caracteres) y cantidad entera de 1 a 5, total = precio × cantidad. "Revisar pedido" abre un resumen (producto, cantidad, total, nombre, "Retiro en el local"); "Volver" lo cierra conservando los datos; "Confirmar pedido" muestra "Pedido recibido en esta demostración" con el mismo resumen. Los pedidos se conservan solo mientras la página está abierta.
+   - ⬜ Entrega a domicilio, pagos, cuentas y pantalla del personal: fuera de esta etapa.
+   - ✅ El botón "Hacer pedido" del hero apunta a `/pedido`.
    - El formulario de contacto se mantiene igual; falta aclarar en el copy que es para consultas generales, no para pedidos.
 
 ## Fase 2 — Completar lo que quedó a medias
