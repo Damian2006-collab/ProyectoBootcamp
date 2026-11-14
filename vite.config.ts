@@ -1,10 +1,10 @@
-import { resolve } from 'node:path';
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { resolve } from 'node:path'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
-// Dos entradas: el sitio público (index.html, una SPA con React Router) y el
-// playground del backoffice, que va aparte para que sus estilos no se mezclen
-// con los del sitio.
+// Dos entradas: el sitio (index.html, React Router) y el playground de
+// componentes del backoffice, que va aparte para no mezclar sus estilos.
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
@@ -15,4 +15,4 @@ export default defineConfig({
       },
     },
   },
-});
+})

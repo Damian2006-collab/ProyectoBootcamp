@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+/* Colores de la página anterior de Dami's Burguer */
+:root {
+  --dami-texto: #3d2314;
+  --dami-fondo: #fffaf3;
+  --dami-tenue: #7a5c44;
+  --dami-borde: #e8d5b8;
+  --dami-crema: #fff3e0;
+  --dami-crema-2: #fdebd0;
+  --dami-superficie: #fff;
+  --dami-rojo: #c0392b;
+  --dami-queso: #e67e22;
+  --dami-sombra: 0 4px 20px rgba(61, 35, 20, 0.08);
+  --dami-sombra-hover: 0 12px 32px rgba(61, 35, 20, 0.14);
+}
+
+/* Modo oscuro de la página anterior ([data-theme="dark"] en pag_burguer) */
+[data-mantine-color-scheme='dark'] {
+  --dami-texto: #f3e5d3;
+  --dami-fondo: #1b1410;
+  --dami-tenue: #c9a888;
+  --dami-borde: #4a372a;
+  --dami-crema: #241a14;
+  --dami-crema-2: #2e2119;
+  --dami-superficie: #241a14;
+  --dami-rojo: #e8604a;
+  --dami-queso: #f4a13f;
+  --dami-sombra: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --dami-sombra-hover: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --mantine-color-body: #1b1410;
+  --mantine-color-text: #f3e5d3;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background-color: var(--dami-fondo);
+  color: var(--dami-texto);
+}

@@ -1,23 +1,28 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
-import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import MenuPage from './pages/MenuPage';
-import NosotrosPage from './pages/NosotrosPage';
-import LoginPage from './pages/LoginPage';
-import RegistroPage from './pages/RegistroPage';
+import { Route, Routes } from 'react-router'
+import { Marco } from './diseno/Marco'
+import { Login, Registro } from './paginas/Acceso'
+import { Inicio } from './paginas/Inicio'
+import { Menu } from './paginas/Menu'
+import { NoEncontrado } from './paginas/NoEncontrado'
+import { Nosotros } from './paginas/Nosotros'
+import { PaginaPedido } from './paginas/PaginaPedido'
+import './App.css'
 
-export default function App() {
+// Rutas declarativas con React Router (F3-D6).
+function App() {
   return (
     <Routes>
-      <Route element={<Layout />}>
-        <Route index element={<HomePage />} />
-        <Route path="menu" element={<MenuPage />} />
-        <Route path="nosotros" element={<NosotrosPage />} />
-        <Route path="pedido" element={<Navigate to="/menu" replace />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="registro" element={<RegistroPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+      <Route element={<Marco />}>
+        <Route index element={<Inicio />} />
+        <Route path="menu" element={<Menu />} />
+        <Route path="pedido" element={<PaginaPedido />} />
+        <Route path="nosotros" element={<Nosotros />} />
+        <Route path="login" element={<Login />} />
+        <Route path="registro" element={<Registro />} />
+        <Route path="*" element={<NoEncontrado />} />
       </Route>
     </Routes>
-  );
+  )
 }
+
+export default App

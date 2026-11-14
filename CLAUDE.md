@@ -1,43 +1,87 @@
-# CLAUDE.md
+## Available Research Tools
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+- Context7 MCP tools available: resolve library ID before querying docs
+- Mintlify Index NOT available — fall back to official web documentation
+- Web search available for current information outside documentation indexes
+
+# CLAUDE.md — damis-burguer
+
+**Read this file first.** It is the navigation map for every AI agent working in this repository.
 
 ## Project
 
-Dami's Burguer — the burger restaurant's site, built with **React 19 + TypeScript + Vite**, routed with React Router (BrowserRouter). It was migrated on 2026-11-14 from a static multi-page HTML/CSS/TS site; the markup, class names, ids and CSS were kept identical, so `src/styles/styles.css` is the same stylesheet as before.
+**damis-burguer** — Pagian de hamburguesas
 
-## Commands
+## Health check and repair mode
 
-- `npm run dev` — Vite dev server.
-- `npm run build` — `tsc --noEmit` (type-check) then `vite build` into `dist/`.
-- `npm run preview` — serve the built `dist/`.
-- No lint or test runner configured.
+`tasks.claim` runs native health automatically and returns the health result and execution mode. A green result enters `normal`; a failed result enters `blocked`, where diagnostic actions remain available but builder/custom implementation is denied. If the change itself repairs the failure, call `tasks.repair.begin(taskId, actor, reason, scope)` with a bounded audit trail before implementation. `tasks.update(taskId, 'done')` runs final health automatically and closes only on a fresh pass. `health.run(taskId)` remains available for diagnostic reruns; `ahk health` is manual and stateless.
 
-## Deploy
+## Harness data (source of truth)
 
-`netlify.toml` builds with `npm run build` and publishes `dist/`. `public/_redirects` sends the old `*.html` URLs to the new routes (301) and falls back every other path to `index.html` so client-side routes work on reload. `public/robots.txt` is copied as-is.
+| File | Purpose |
+|------|---------|
+| `.harness/harness.db` | SQLite: tasks, actions, and action sections |
 
-## Architecture
+## MCP tools (preferred)
 
-Two Vite entries (see `vite.config.ts`):
-- `index.html` → `src/main.tsx` — the public site (SPA).
-- `playground.html` → `src/playground/main.tsx` — the backoffice component library. Kept as a separate entry on purpose so its CSS (`src/playground/css/*`, aggregated by `playground.css`) never mixes with the site's `styles.css`; both define overlapping custom properties.
+The harness exposes tools via MCP server on port 3742. Use these instead of reading files directly.
 
-Both HTML entries keep the analytics snippets (gtag, Mixpanel, Contentsquare) in `<head>`. **Never write the literal text `</head>` inside an HTML comment** there: Vite injects the bundle `<script>` before the first `</head>` it finds and it ended up inside a comment once.
+Lifecycle responses may include an additive operational-notices block. Briefly relay relevant actionable notices to the developer; a suggested command is information, not authorization to run it.
 
-**Site (`src/`):**
-- `App.tsx` — routes: `/`, `/menu`, `/nosotros`, `/login`, `/registro` (`/pedido` redirects to `/menu`); unknown paths redirect to `/`.
-- `components/Layout.tsx` — skip link, `Header`, `<Outlet />`, `Footer`. Also scrolls to `#hash` after navigation (e.g. `/#contacto`) or to the top, and runs `useAnimateOnScroll` (IntersectionObserver adding `.is-visible` to `.animate-on-scroll`) on every route change.
-- `components/Header.tsx` — logo, `ThemeToggle`, mobile `#btn-menu` toggle (Escape closes and refocuses it; clicking a link closes it), nav. Page links use `NavLink` (sets `aria-current="page"`, which the CSS styles); home-section links (`/#testimonios`, `/#contacto`) use `Link`. The sliding `.nav-pill` is driven by `hooks/useNavPill.ts` (measures with `getBoundingClientRect`, re-measures on resize, fonts ready, route change and menu open).
-- `components/ThemeToggle.tsx` — flips `data-theme` on `<html>` and stores it in `localStorage('theme')`. The inline script in `index.html` sets the initial theme before first paint.
-- `components/Seo.tsx` — per-page `<title>`, description, OG/Twitter tags (React 19 hoists them into `<head>`).
-- `pages/MenuPage.tsx` (`/menu`, also the hero's "Hacer pedido") — the menu IS the course assignment's order screen (the old 12-item catalog and localStorage cart were removed on 2026-11-14 so prices match the assignment). The home page's featured cards reuse the same 3 burgers. catalog of 3 fixed-price burgers from `data/pedido.ts` (radio cards), name ≥ 2 chars, integer quantity 1–5, live total. "Revisar pedido" validates and opens a native `<dialog>` with `OrderSummary`; "Volver"/Escape close it keeping the form; "Confirmar pedido" shows "Pedido recibido en esta demostración" with the same summary. Confirmed orders live only in page state. The form uses `noValidate` so our messages show instead of the browser's.
-- Forms: `ContactForm` (home), `pages/LoginPage`, `pages/RegistroPage`. Controlled inputs; validation runs on submit with rules in `lib/validation.ts` (email, password strength, age 13–120). `FormField` renders label + input + optional hint + `.field-error` span wired with `aria-describedby`/`aria-invalid`; `FormFeedback` is the summary below the form; `useFieldRefs` focuses the first invalid field. Inputs keep `required`, so the browser's native check runs before ours.
+```
+actions.start        taskId agent                           → start an action, returns a numeric actionId
+actions.write        actionId section text                  → record a section (result, blockers, ...)
+actions.complete     actionId summary                       → close the action
+actions.list         taskId [agent] [status] [limit] [cursor] → compact newest-first action index with pagination
+actions.get_by_id    actionId                               → single action with section index (no content)
+actions.sections_list actionId [types] [limit] [cursor]      → compact section index with type filtering
+actions.sections_get sectionId [length] [offset]             → ranged section content reader
+actions.handoff.get    taskId [recipient]                     → newest completed canonical handoff
+actions.handoff.write  actionId recipient ...                 → recipient-directed bounded handoff
+tasks.add            title [slug] [description] [acceptance] → create a new task from natural language
+tasks.get            [status]                               → list tasks (pending | in_progress | done | blocked)
+tasks.claim          id                                     → claim and run health automatically
+tasks.repair.begin   taskId actor reason scope              → audited repair after failed health
+health.run           taskId                                 → diagnostic server-owned health rerun
+tasks.update         id status                              → done runs final health automatically
+tasks.acceptance.update criterionId                        → mark an acceptance criterion as met
+docs.search          query                                  → search ./docs for relevant content
+```
 
-**Gotcha:** the `hidden` attribute doesn't hide elements whose CSS sets `display` (e.g. `.btn`). Render conditionally instead (`{cond && <button/>}`), as `CartSummary` does.
+## Workflow
 
-**CSS:** `src/styles/styles.css` is mobile-first: unqualified rules are mobile, a single `@media (min-width: 769px)` block near the end holds desktop overrides, no `!important`. Dark mode is a `[data-theme="dark"]` block after `:root`.
+```
+1. INIT
+   - Assess user intent: for changes, select a task and call tasks.claim(id); inspect its execution mode
+   - tasks.get('in_progress') → resume if something is in progress
+   - tasks.get('pending') → pick lowest id
+    - No pending tasks? → ask user, infer fields, call tasks.add, then tasks.claim
 
-**Images:** all photos are Unsplash URLs; verify a new photo id returns 200 before using it (ids can disappear).
+    - No pending tasks? → ask user, infer fields, call tasks.add, then tasks.claim
+2. WORK  (lead → explorer → consultant → builder → reviewer)
+     - Each agent calls actions.start(taskId, agentName) → numeric actionId
+     - Closes with actions.complete(actionId, summary)
 
-**Playground (`src/playground/`):** `Playground.tsx` renders the six sections (Alerts, Botones, Checkboxes/Radios, Dialogs, Menús, Toasts) with their keyboard/focus docs. `AccountMenu.tsx` is the dropdown (one open at a time, Escape/click-outside close). `useToasts.ts` caps visible toasts at 3 and removes new ones after 4 s. The dialog uses the native `<dialog>` with `showModal()` and returns focus to its trigger on close. `variables.css` holds the backoffice design tokens; `alerts.css` is hand-authored, leave it alone.
+3. CLOSE
+     - tasks.update(taskId, 'done') → runs and records final health automatically
+```
+
+## Agent roles
+
+| Agent | Responsibility |
+|-------|---------------|
+| lead | Decomposes the task into a plan, assigns sub-agents |
+| explorer | Reads and maps relevant code, never writes |
+| consultant | Technical advisor, runs after explorer, before builder. Never writes code. |
+| builder | Implements the plan, writes files |
+| reviewer | Verifies acceptance criteria, approves or blocks |
+
+## What to read
+
+```
+Always:         MCP tasks.get. If MCP is unavailable, stop and ask the user to restore the MCP connection.
+If implementing: ./docs/
+If orchestrating: Agent definition files in .claude/agents/
+```
+
+<!-- ahk:generated 84049d1d56f0fb04d86786de3d1c83495d3069bbc7c113250ac0b50f35736018 -->
