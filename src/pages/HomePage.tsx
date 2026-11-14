@@ -1,14 +1,7 @@
 import { Link } from 'react-router-dom';
 import Seo from '../components/Seo';
-import MenuCard from '../components/MenuCard';
 import ContactForm from '../components/ContactForm';
-import { findMenuItem } from '../data/menu';
-
-const FEATURED = [
-  { id: 'clasica-damis', headingId: 'burger-clasica' },
-  { id: 'bbq-smoke', headingId: 'burger-bbq' },
-  { id: 'veggie-garden', headingId: 'burger-veggie' },
-];
+import { formatOrderPrice, ORDER_BURGERS } from '../data/pedido';
 
 const TESTIMONIALS = [
   {
@@ -45,7 +38,7 @@ export default function HomePage() {
             <p>Ingredientes frescos, pan recién horneado y recetas hechas con pasión. Bienvenido a Dami's Burguer.</p>
             <div className="hero-actions">
               <Link className="btn" to="/#menu">Ver menú</Link>
-              <Link className="btn btn--outline" to="/pedido">Hacer pedido</Link>
+              <Link className="btn btn--outline" to="/menu">Hacer pedido</Link>
             </div>
           </div>
 
@@ -65,19 +58,28 @@ export default function HomePage() {
         <div className="container">
           <header className="section-header animate-on-scroll">
             <h2 id="menu-titulo">Menú destacado</h2>
-            <p>Nuestras hamburguesas más populares, preparadas al momento.</p>
+            <p>Nuestras tres hamburguesas, preparadas al momento.</p>
           </header>
 
           <ul className="menu-grid" role="list">
-            {FEATURED.map(({ id, headingId }) => (
-              <li className="animate-on-scroll" key={id}>
-                <MenuCard item={findMenuItem(id)} headingId={headingId} />
+            {ORDER_BURGERS.map((burger) => (
+              <li className="animate-on-scroll" key={burger.id}>
+                <article className="menu-card" aria-labelledby={`burger-${burger.id}`}>
+                  <div className="menu-card__image">
+                    <img src={burger.cardImage} alt={`Hamburguesa ${burger.name}`} width={500} height={375} loading="lazy" />
+                  </div>
+                  <div className="menu-card__body">
+                    <h3 id={`burger-${burger.id}`}>{burger.name}</h3>
+                    <p>{burger.description}</p>
+                    <p className="price">{formatOrderPrice(burger.price)} <span>USD</span></p>
+                  </div>
+                </article>
               </li>
             ))}
           </ul>
 
           <p className="section-cta">
-            <Link className="btn btn--outline" to="/menu">Ver menú completo</Link>
+            <Link className="btn btn--outline" to="/menu">Ir al menú y pedir</Link>
           </p>
         </div>
       </section>

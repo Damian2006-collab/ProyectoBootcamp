@@ -6,11 +6,16 @@ export interface OrderBurger {
   name: string;
   price: number;
   description: string;
+  /** Miniatura cuadrada del catálogo del menú. */
   image: string;
+  /** Foto grande para las tarjetas de la portada. */
+  cardImage: string;
 }
 
-const thumb = (photoId: string) =>
-  `https://images.unsplash.com/photo-${photoId}?w=160&h=160&fit=crop&q=80`;
+const photo = (photoId: string) => ({
+  image: `https://images.unsplash.com/photo-${photoId}?w=160&h=160&fit=crop&q=80`,
+  cardImage: `https://images.unsplash.com/photo-${photoId}?w=500&h=375&fit=crop&q=80`,
+});
 
 export const ORDER_BURGERS: OrderBurger[] = [
   {
@@ -18,21 +23,21 @@ export const ORDER_BURGERS: OrderBurger[] = [
     name: 'Clásica',
     price: 5,
     description: 'Carne, queso cheddar, lechuga y tomate.',
-    image: thumb('1550547660-d9450f859349'),
+    ...photo('1550547660-d9450f859349'),
   },
   {
     id: 'queso',
     name: 'Queso',
     price: 6,
     description: 'Carne con doble cheddar fundido y cebolla.',
-    image: thumb('1586190848861-99aa4a171e90'),
+    ...photo('1586190848861-99aa4a171e90'),
   },
   {
     id: 'doble',
     name: 'Doble',
     price: 7,
     description: 'Dos medallones de carne con queso y salsa especial.',
-    image: thumb('1553979459-d2229ba7433b'),
+    ...photo('1553979459-d2229ba7433b'),
   },
 ];
 
