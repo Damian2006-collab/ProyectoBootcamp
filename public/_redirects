@@ -1,0 +1,8 @@
+# URLs viejas del sitio estático -> rutas de React Router
+/menu.html      /menu       301
+/nosotros.html  /nosotros   301
+/login.html     /login      301
+/registro.html  /registro   301
+
+# Cualquier otra ruta la resuelve la SPA
+/*              /index.html 200
