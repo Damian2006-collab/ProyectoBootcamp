@@ -8,7 +8,7 @@ const TESTIMONIOS = [
   { foto: 'photo-1494790108377-be9c29b29330', texto: 'La Clásica Dami\'s es la mejor hamburguesa que he probado. El pan está increíble y el servicio es rapidísimo.', autor: 'María González, cliente frecuente' },
   { foto: 'photo-1500648767791-00dcc994a43e', texto: 'Pedí la BBQ Smoke para llevar y llegó calientita, con el pan perfecto. Ya es mi lugar favorito del barrio.', autor: 'Andrés Paredes, cliente frecuente' },
   { foto: 'photo-1544005313-94ddf0286df2', texto: 'La Veggie Garden me sorprendió — no extrañé la carne para nada. Atención súper amable también.', autor: 'Camila Ortiz, primera visita' },
-// ERROR INTENCIONAL: falta el corchete de cierre del arreglo
+]
 
 export function Inicio() {
   return (
