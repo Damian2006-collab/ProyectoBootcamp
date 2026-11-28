@@ -25,3 +25,7 @@ dist-ssr
 .harness/harness.db
 .harness/harness.db-shm
 .harness/harness.db-wal
+
+# Secretos: la clave de Gemini solo vive en backend/.env
+.env
+backend/node_modules
