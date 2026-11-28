@@ -17,7 +17,7 @@ export function Inicio() {
         <Container size="lg" py={56}>
           <div className="hero-rejilla">
             <Stack gap="md">
-              <span className="hero-insignia">🔥 Recién hechas al momento</span>
+              <span className="hero-insignia">🔥 Recién hechas al momento con mucho amor y dedicación </span>
               <Title order={1} id="hero-titulo" className="hero-titulo">
                 Las mejores <em>hamburguesas</em> artesanales
               </Title>
