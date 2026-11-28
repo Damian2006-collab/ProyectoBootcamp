@@ -1,9 +1,11 @@
-name: CI ProyectoBootcamp
+name: CI/CD ProyectoBootcamp
 
 on:
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -42,3 +44,30 @@ jobs:
           name: dist
           path: dist
           if-no-files-found: error
+
+  deploy:
+    name: Desplegar en Amazon S3
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el artefacto dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Autenticarse en AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sincronizar dist con el bucket S3
+        run: aws s3 sync dist "s3://${{ vars.S3_BUCKET }}" --delete
+
+      - name: Mostrar la URL publicada
+        run: echo "App publicada en http://${{ vars.S3_BUCKET }}.s3-website-${{ vars.AWS_REGION }}.amazonaws.com"
