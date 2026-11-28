@@ -6,6 +6,7 @@ const ENLACES: [string, string][] = [
   ['/', 'Inicio'],
   ['/menu', 'Menú'],
   ['/pedido', 'Hacer pedido'],
+  ['/recomendador', 'Recomendador IA'],
   ['/nosotros', 'Nosotros'],
   ['/#contacto', 'Contacto'],
   ['/login', 'Iniciar sesión'],

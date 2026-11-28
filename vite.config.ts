@@ -7,6 +7,8 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // En desarrollo, /api se reenvía al backend con Gemini (backend/server.js).
+  server: { proxy: { '/api': 'http://localhost:3001' } },
   build: {
     rollupOptions: {
       input: {
